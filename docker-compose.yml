@@ -1,0 +1,42 @@
+version: '3'
+services:
+  app:
+    container_name: gh-fetch
+    environment:
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST} 
+      - PORT=${DB_PORT}
+    build: .
+    ports: 
+      - 8000:8000 
+    restart: on-failure
+    depends_on:
+      - postgres
+    networks:
+      - network
+
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST} 
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - network
+
+volumes:
+  api:
+  postgres:
+
+networks:
+  network:
+    driver: bridge
